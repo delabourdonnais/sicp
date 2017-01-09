@@ -106,3 +106,58 @@
 
 
 
+(fast-prime? 47 5)
+
+;ex1.21
+
+(define (smallest-divisor n)
+  (define (divides? test-divisor n)
+    (= (remainder n test-divisor) 0))
+  (define (find-divisor test-divisor)
+    (cond ((> (square test-divisor) n) n)
+	  ((divides? test-divisor n) test-divisor)
+	  (else (find-divisor (+ test-divisor 1)))))
+  (find-divisor 2))
+
+(smallest-divisor 59)
+
+;ex1.22
+
+(define (prime? n)
+  (if (= n 1) false
+      (= (smallest-divisor n) n)))
+
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+
+(define (start-prime-test n start-time)
+  (if (prime? n)
+      (report-prime (- (runtime) start-time))))
+
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
+
+(define (search-for-primes lower-bound)
+  (define (check-is-prime value count)
+    (define (display-prime value count)
+      (newline)
+      (display value)
+      (check-is-prime (+ value 2) (+ count 1)))
+    (if (> count 2) (display " *** ")
+	(if (prime? value)
+	    (display-prime value count)
+	    (check-is-prime (+ value 2) count))))
+  (if (even? lower-bound)
+      (search-for-primes (+ lower-bound 1))
+      (check-is-prime lower-bound 0)))
+
+(search-for-primes 1000)
+
+
+		       
+
+
+  
