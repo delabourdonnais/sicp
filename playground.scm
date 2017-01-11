@@ -156,8 +156,127 @@
 
 (search-for-primes 1000)
 
+;ex1.29 simpson's rule
 
-		       
+(define (sum term next a b)
+  (if (> a b) 0
+      (+ (term a) (sum term next (next a) b))))
 
+(define (inc x) (+ x 1))
+(define (identity x) x)
 
+(define (sum-integers a b)
+  (sum identity inc a b))
+
+(define (simpson f a b n)
+  (define h (/ (- b a) n))
+  (define (add-h x) (+ x h))
+  (define (add-two-h x) (+ x (* 2 h)))
+  (define first-sum (sum f add-h a b))
+  (define second-sum (sum f add-two-h (add-h a) b))
+  (* (/ h 3.0) (+ (- (* 2 first-sum) a b)
+		(* 2 second-sum))))
+
+(define (cube x) (* x x x))
+(simpson cube 0 1 200)
+
+;ex1.30
+
+(define (sum-iter term next a b)
+  (define (iter a result)
+    (if (> a b)
+	result
+	(iter (next a) (+ (term a) result))))
+  (iter a 0))
+
+(sum-iter identity inc 1 10)
+
+;ex1.31
+
+(define (product term next a b)
+  (if (> a b) 1
+      (* (term a) (product term next (next a) b))))
+
+(define (factorial n)
+  (product identity inc 1 n))
+
+(factorial 4)
+
+;ex 1.35
+
+(define (fixed-point f guess)
+  (newline)
+  (display guess)
+  (define (close-enough? a b)
+    (< (abs (- a b)) 0.0001))
+  (if (close-enough? (f guess) guess)
+      (f guess)
+      (fixed-point f (f guess))))
+
+(fixed-point cos 1.0)
+;golden ratio approximation
+
+(define (average a b)
+  (/ (+ a b) 2))
+
+(define (sqrt x)
+  (fixed-point (lambda (y) (average y (/ x y))) 1.0))
+
+(sqrt 2)
+(fixed-point (lambda (x) (+ 1 (/ 1 x))) 1.0)
+
+; ex 1.36
+(fixed-point (lambda (x) (/ (log 1000) (log x))) 2.0)
+(fixed-point (lambda (x) (average x (/ (log 1000) (log x)))) 2.0)
+
+;ex 1.37
+
+(define (cont-frac n d k)
+  (define (cf-helper start)
+    (if (= start k)
+	(/ (n k) (d k))
+	(/ (n start) (+ (d start) (cf-helper (+ start 1))))))
+  (cf-helper 1))
+
+(define golden-inv (cont-frac
+		    (lambda (i) 1.0)
+		    (lambda (i) 1.0)
+		    1000))
+(/ 1 golden-inv)
+
+(define (cont-frac-iter n d k)
+  (define (cf-helper result count)
+    (if (= count 0)
+	result
+	(cf-helper (/ (n count)
+		      (+ (d count) result))
+		   (- count 1))))
+  (cf-helper 0 k))
+
+(cont-frac-iter (lambda (i) 1.0)
+		(lambda (i) 1.0)
+		100)
+
+;ex 1.38
+
+(define (euler-denom i)
+  (cond ((= (remainder i 3) 0) 1)
+	((= (remainder i 3) 1) 1)
+	(else (* 2 (/ (+ i 1) 3)))))
+
+(+ (cont-frac-iter (lambda (i) 1.0)
+		euler-denom
+		1000) 2)
+
+; ex 1.39
+
+(define (tan-cf x k)
+  (define (tan-num i)
+    (if (= i 1) x
+	(- (* x x))))
+  (cont-frac-iter tan-num
+		  (lambda (i) (- (* 2 i) 1))
+		  k))
+
+(tan-cf 3.14 100000)
   
