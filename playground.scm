@@ -205,8 +205,6 @@
 ;ex 1.35
 
 (define (fixed-point f guess)
-  (newline)
-  (display guess)
   (define (close-enough? a b)
     (< (abs (- a b)) 0.0001))
   (if (close-enough? (f guess) guess)
@@ -279,4 +277,84 @@
 		  k))
 
 (tan-cf 3.14 100000)
-  
+
+; ex 1.40
+
+(define (cubic a b c)
+  (lambda (x)
+    (+ (* x x x)
+       (* a (* x x))
+       (* b x)
+       c)))
+
+(define (deriv g)
+  (define dx 0.0001)
+  (lambda (x)
+    (/ (- (g (+ x dx)) (g x)) dx)))
+
+
+(define (newtons-transform g)
+  (lambda (x)
+    (- x (/ (g x) ((deriv g) x)))))
+
+(define (newtons-method g guess)
+  (fixed-point (newtons-transform g) guess))
+
+(newtons-method (cubic 3 3 1) 1)
+
+; ex 1.42
+
+(define (compose f g)
+  (lambda (x)
+    (f (g x))))
+
+((compose (lambda (x) (* x x))
+	  (lambda (x) (+ x 1))) 5)
+
+; ex 1.41
+(define (double f)
+  (compose f f))
+
+((double (lambda (x) (+ x 1))) 1)
+(((double double) (lambda (x) (+ x 1))) 1)
+(((double (double double)) (lambda (x) (+ x 1))) 1)
+
+; ex 1.43
+(define (repeated f n)
+  (if (= n 0)
+      (lambda (x) x)
+      (lambda (x) ((repeated f (- n 1)) (f x)))))
+
+((repeated (lambda (x) (* x x)) 2) 5)
+
+; ex 1.44
+(define (smooth f)
+  (define dx 0.0001)
+  (lambda (x)
+    (/ (+ (f (-x dx))
+	  (f x)
+	  (f (+ x dx)))
+       3)))
+
+(define (smooth-n-fold f n)
+  (repeated (smooth f) n))
+
+; ex 1.45
+(define (iterative-improve close-enough? improve)
+  (define (test guess)
+    (if (close-enough? guess)
+	guess
+	(test (improve guess))))
+  test)
+
+(define (sqrt x)
+  (define (improve guess)
+    (/ (+ guess (/ x guess)) 2))
+  (define (close-enough? guess)
+    (< (abs (- x (* guess guess))) 0.0001))
+  ((iterative-improve close-enough? improve) 1.0))
+
+(sqrt 2)
+
+
+       
