@@ -355,6 +355,61 @@
   ((iterative-improve close-enough? improve) 1.0))
 
 (sqrt 2)
+; Chapter 2
+;ex 2.1
+(define (gcd a b)
+  (if (= b 0)
+      (abs a)
+      (gcd b (remainder a b))))
+
+(define (make-rat n d)
+  (let ((g (gcd n d)))
+    (if (< d 0)
+	(cons (/ (- n) g) (/ (- d) g))
+	(cons (/ n g) (/ d g)))))
+
+(define (numer x) (car x))
+(define (denom x) (cdr x))
+
+(define (print-rat x)
+  (newline)
+  (display (numer x))
+  (display "/")
+  (display (denom x)))
+
+(print-rat (make-rat 15 0))
+
+;ex 2.2
+(define (make-point x y)
+  (cons x y))
+
+(define (make-segment start end)
+  (cons start end))
+
+(define (x-point point)
+  (car point))
+
+(define (y-point point)
+  (cdr point))
+
+(define (start-segment segment)
+  (car segment))
+
+(define (end-segment segment)
+  (cdr segment))
+
+(define (mid-point segment)
+  (make-point
+   (/ (+ (x-point (start-segment segment))
+	 (x-point (end-segment segment)))
+      2)
+   (/ (+ (y-point (start-segment segment))
+	 (y-point (end-segment segment)))
+      2)))
 
 
-       
+
+
+
+
+
