@@ -407,6 +407,68 @@
 	 (y-point (end-segment segment)))
       2)))
 
+; ex 2.4
+(define (cons x y)
+  (lambda (m) (m x y)))
+
+(define (car z)
+  (z (lambda (x y) x)))
+
+(define (cdr z)
+  (z (lambda (x y) y)))
+
+(define z (cons 1 66))
+
+(define (exp b n)
+  (cond ((= n 0) 1)
+	((= (remainder n 2) 0)
+	 (* (exp b (/ n 2)) (exp b (/ n 2))))
+	(else (* b (exp b (- n 1))))))
+
+
+;ex 2.5
+(define (cons a b) ; a and b are non negative integers
+  (* (exp 2 a) (exp 3 b)))
+
+(define (car z)
+  (define (car-acc value count)
+    (if (= (remainder value 2) 1) count
+	(car-acc (/ value 2) (+ count 1))))
+  (car-acc z 0))
+
+(define (cdr z)
+  (define (cdr-acc value count)
+    (if (not (= (remainder value 3) 0)) count
+	(cdr-acc (/ value 3) (+ count 1))))
+  (cdr-acc z 0))
+
+; ex 2.17
+
+(define (last-pair a)
+  (cond ((null? a) (error "empty list argument"))
+	((= (length a) 1) a)
+	(else (last-pair (cdr a)))))
+
+(last-pair (list 4 66 22 99))
+
+; ex 2.18
+
+(define (reverse a)
+  (if (null? a) a (append (reverse (cdr a)) (list (car a)))))
+
+; ex 2.20
+
+(define (same-parity first-arg . args)
+  (define (filter-args a)
+    (define parity (remainder first-arg 2))
+    (if (null? a) a
+	(if (= (remainder (car a) 2) parity)
+	    (cons (car a) (filter-args (cdr a)))
+	    (filter-args (cdr a)))))
+  (cons first-arg (filter-args args)))
+
+(same-parity 1 2 3 4 5 6 7)
+(same-parity 2 3 4 5 6 7)
 
 
 
