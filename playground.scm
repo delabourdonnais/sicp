@@ -470,8 +470,79 @@
 (same-parity 1 2 3 4 5 6 7)
 (same-parity 2 3 4 5 6 7)
 
+; ex 2.24
+(define a (list 1 (list 2 (list 3 4))))
+(length a)
+;ex 2.27
+
+(define x (list (list 1 2) (list 3 4)))
+(reverse x)
+(define (deep-reverse x)
+  (if (or (null? x)
+	  (not (pair? x)))
+      x
+      (append (deep-reverse (cdr x))
+	      (list (deep-reverse (car x))))))
+(deep-reverse x)
+
+;ex 2.28
+
+(define (fringe tree)
+  (cond ((null? tree) '())
+	((not (pair? tree)) (list tree))
+	(else (append (fringe (car tree))
+		      (fringe (cdr tree))))))
+
+(fringe (list x x))
+
+;ex 2.29
+(define (make-mobile left right)
+  (list left right))
+
+(define (make-branch length structure)
+  (list length structure))
+
+(define (left-branch mobile)
+  (car mobile))
+
+(define (right-branch mobile)
+  (cadr mobile))
+
+(define (branch-length branch)
+  (car branch))
+
+(define (branch-structure branch)
+  (cadr structure))
+
+(define (total-weight-branch branch)
+    (if (not (pair? (branch-structure branch)))
+	(branch-structure branch)
+	(total-weight (branch-structure branch))))
+
+(define (total-weight mobile)
+  (+ (total-weight-branch (left-branch mobile))
+     (total-weight-branch (right-branch mobile))))
+
+; ex 2.30
+
+(define (square-tree tree)
+  (map (lambda (sub-tree)
+	 (if (pair? sub-tree)
+	     (square-tree sub-tree)
+	     (square sub-tree))) tree))
+
+; ex 2.32
+(define (subsets s)
+  (if (null? s)
+      (list '())
+      (let ((rest (subsets (cdr s))))
+	(append rest (map (lambda (subset)
+			    (cons (car s) subset))
+			  rest)))))
+
+(subsets (list 1 2 3))
 
 
-
+  
 
 
