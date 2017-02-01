@@ -542,7 +542,38 @@
 
 (subsets (list 1 2 3))
 
+; ex 2.33
+(define (accumulate op initial sequence)
+  (if (null? sequence) initial
+      (op (car sequence)
+	  (accumulate op initial (cdr sequence)))))
 
-  
+(define (map1 f sequence)
+  (accumulate (lambda (x y)
+		(cons (f x) y)
+		) '() sequence))
 
+(define (append1 seq1 seq2)
+  (accumulate cons seq2 seq1))
 
+(define (length1 sequence)
+  (accumulate (lambda (x y) (+ 1 y)) 0 sequence))
+
+; ex 2.34
+(define (horner-eval x coefficient-sequence)
+  (accumulate (lambda (this-coeff higher-terms)
+		(+ this-coeff (* x higher-terms)))
+	      0
+	      coefficient-sequence))
+(horner-eval 3 (list 1 0 1))
+
+;ex 2.35
+(define (count-leaves tree)
+  (accumulate + 0 (map (lambda (node)
+			 (if (not (pair? node))
+			     1
+			     (count-leaves node)))
+		       tree)))
+
+(define tree (list (list 1 2) 3 (list 4 (list 5 6))))
+(count-leaves tree)
