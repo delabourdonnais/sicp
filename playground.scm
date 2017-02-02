@@ -577,3 +577,76 @@
 
 (define tree (list (list 1 2) 3 (list 4 (list 5 6))))
 (count-leaves tree)
+
+; ex 2.36
+
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      '()
+      (cons (accumulate op init (map car seqs))
+	    (accumulate-n op init (map cdr seqs)))))
+
+(accumulate-n + 0 (list (list 1 2) (list 3 4)))
+
+; ex 2.37
+
+(define (dot-product v w)
+  (accumulate + 0 (map * v w)))
+
+(define (matrix-*-vector m v)
+  (map (lambda (row) (dot-product row v)) m))
+
+(define (transpose mat)
+  (accumulate-n cons '() mat))
+
+(transpose (list (list 1 2 3) (list 4 5 6)))
+
+(define (matrix-*-matrix m n)
+  (let ((cols (transpose n)))
+    (map (lambda (row) (matrix-*-vector cols row)) m)))
+
+(define m (list (list 1 2) (list 3 4)))
+(define n (list (list 2 3) (list 1 4)))
+(matrix-*-matrix m n)
+
+; ex 2.39
+
+(define (reverse sequence)
+  (accumulate (lambda (x y) (append y (list x))) '() sequence))
+
+; ex 2.40
+
+(define (flatmap proc seq)
+  (accumulate append '() (map proc seq)))
+
+(define (enumerate-interval low high)
+  (if (> low high) '()
+      (cons low (enumerate-interval (+ low 1) high))))
+
+(define (unique-pairs n)
+  (flatmap (lambda (i)
+	     (map (lambda (j)
+		    (list i j))
+		  (enumerate-interval 1 (- i 1))))
+	   (enumerate-interval 1 n)))
+
+(unique-pairs 5)
+
+; ex 2.41
+
+(define (unique-triplets n)
+  (flatmap (lambda (pair)
+	     (map (lambda (k)
+		    (list (cadr pair) (car pair) k))
+		  (enumerate-interval (+ (car pair) 1) n)))
+	   (unique-pairs n)))
+
+(define (sum-triplets n s)
+  (filter (lambda (triplet)
+	    (= (+ (car triplet)
+		  (cadr triplet)
+		  (caddr triplet)) s))
+	  (unique-triplets n)))
+
+(sum-triplets 5 10)
+
