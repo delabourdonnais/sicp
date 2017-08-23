@@ -1,43 +1,70 @@
-(define (factorial n)
-  (define (factorial-iter product count max-count)
-    (if (> count max-count)
-	product
-	(factorial-iter (* product count)
-			(+ count 1)
-			max-count)))
-  (factorial-iter 1 1 n))
+;ex 1.3
+(define (square x) (* x x))
 
-(factorial 33)
+;ex 1.5
+(define (p) (p))
+(define (test x y)
+  (if (= x 0) 0 y))
+
+;ex 1.6
+(define (new-if predicate if-clause else-clause)
+  (cond (predicate if-clause)
+	(else else-clause)))
+
+(define (sqrt-iter guess x)
+  (if (good-enough2? guess x)
+	  guess
+	  (sqrt-iter (improve guess x)
+		     x)))
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (good-enough? guess x)
+  (< (abs (- (* guess guess) x)) 0.001))
+
+;ex 1.7
+
+(define (good-enough2? guess x)
+  (< (abs (- (improve guess x) guess)) 0.001))
+
+;ex 1.8
+
+(define (cube-iter guess x)
+  (if (good-enough-cube? guess x)
+      guess
+      (cube-iter (improve guess x) x)))
+
+(define (improve-cube guess x)
+  (/ (+ (/ x (square guess)) (* 2 guess)) 3))
+
+(define (good-enough-cube? guess x)
+  (< (abs (- guess (improve-cube guess x))) 0.001))
+
+;ex 1.9
+; first process is recursive, second one is iterative
+
+;ex 1.10
 
 (define (A x y)
   (cond ((= y 0) 0)
 	((= x 0) (* 2 y))
 	((= y 1) 2)
-	(else (A (- x 1) (A x (- y 1))))))
+	(else (A (- x 1)
+	      (A x (- y 1))))))
 
-(A 1 10)
-(A 2 4)
-(A 3 3)
+(define (f n)
+  (a 0 n))
 
-(define (f n) (A 0 n))
-(define (g n) (A 1 n))
-(g 6)
-(define (count-change amount)
-  (define (cc amount kinds-of-coins)
-    (cond ((= amount 0) 1)
-	  ((or (< amount 0) (= kinds-of-coins 0)) 0)
-	  (else (+ (cc amount (- kinds-of-coins 1))
-		   (cc (- amount
-			  (first-denomination kinds-of-coins))
-		       kinds-of-coins)))))
-  (define (first-denomination kinds-of-coins)
-    (cond ((= kinds-of-coins 1) 1)
-	  ((= kinds-of-coins 2) 5)
-	  ((= kinds-of-coins 3) 10)
-	  ((= kinds-of-coins 4) 25)
-	  ((= kinds-of-coins 5) 50)))
-    (cc amount 5))
-(count-change 100)
+(define (g n)
+  (a 1 n))
+
+(define (h n)
+  (a 2 n))
+
 
 ;ex 1.11
 (define (f n)
@@ -53,17 +80,13 @@
 		(+ c (* 2 b) (* 3 a)) (- count 1))))
   (g-iter 0 1 2 n))
 
-(g 25)
-
 ;ex1.12
 
 (define (pascal row col)
-  (if (or (= col 1) (= row 1) (= col row))
+  (if (or (= col 1) (= col row))
       1
       (+ (pascal (- row 1) (- col 1))
 	 (pascal (- row 1) col))))
-
-(pascal 5 3)
 
 ;ex1.16
 
@@ -74,8 +97,6 @@
 	    (fast-exp-iter (* a b) b (- n 1))
 	    (fast-exp-iter a (* b b) (/ n 2)))))
   (fast-exp-iter 1 b n))
-
-(fast-exp 2 10)
 
 ;fermat test
 
@@ -96,17 +117,12 @@
     (= (expmod a n n) a))
   (try-it (+ 1 (random (- n 1)))))
 
-(fermat-test 19)
 
 (define (fast-prime? n times)
   (cond ((= times 0) true)
 	((fermat-test n) (fast-prime? n (- times 1)))
 	(else false)))
 
-
-
-
-(fast-prime? 47 5)
 
 ;ex1.21
 
@@ -119,7 +135,6 @@
 	  (else (find-divisor (+ test-divisor 1)))))
   (find-divisor 2))
 
-(smallest-divisor 59)
 
 ;ex1.22
 
@@ -154,7 +169,6 @@
       (search-for-primes (+ lower-bound 1))
       (check-is-prime lower-bound 0)))
 
-(search-for-primes 1000)
 
 ;ex1.29 simpson's rule
 
@@ -178,7 +192,6 @@
 		(* 2 second-sum))))
 
 (define (cube x) (* x x x))
-(simpson cube 0 1 200)
 
 ;ex1.30
 
@@ -189,7 +202,6 @@
 	(iter (next a) (+ (term a) result))))
   (iter a 0))
 
-(sum-iter identity inc 1 10)
 
 ;ex1.31
 
@@ -200,7 +212,6 @@
 (define (factorial n)
   (product identity inc 1 n))
 
-(factorial 4)
 
 ;ex 1.35
 
@@ -211,7 +222,6 @@
       (f guess)
       (fixed-point f (f guess))))
 
-(fixed-point cos 1.0)
 ;golden ratio approximation
 
 (define (average a b)
@@ -220,12 +230,7 @@
 (define (sqrt x)
   (fixed-point (lambda (y) (average y (/ x y))) 1.0))
 
-(sqrt 2)
-(fixed-point (lambda (x) (+ 1 (/ 1 x))) 1.0)
-
 ; ex 1.36
-(fixed-point (lambda (x) (/ (log 1000) (log x))) 2.0)
-(fixed-point (lambda (x) (average x (/ (log 1000) (log x)))) 2.0)
 
 ;ex 1.37
 
@@ -276,8 +281,6 @@
 		  (lambda (i) (- (* 2 i) 1))
 		  k))
 
-(tan-cf 3.14 100000)
-
 ; ex 1.40
 
 (define (cubic a b c)
@@ -300,7 +303,6 @@
 (define (newtons-method g guess)
   (fixed-point (newtons-transform g) guess))
 
-(newtons-method (cubic 3 3 1) 1)
 
 ; ex 1.42
 
@@ -324,8 +326,6 @@
   (if (= n 0)
       (lambda (x) x)
       (lambda (x) ((repeated f (- n 1)) (f x)))))
-
-((repeated (lambda (x) (* x x)) 2) 5)
 
 ; ex 1.44
 (define (smooth f)
@@ -377,7 +377,6 @@
   (display "/")
   (display (denom x)))
 
-(print-rat (make-rat 15 0))
 
 ;ex 2.2
 (define (make-point x y)
@@ -449,8 +448,6 @@
 	((= (length a) 1) a)
 	(else (last-pair (cdr a)))))
 
-(last-pair (list 4 66 22 99))
-
 ; ex 2.18
 
 (define (reverse a)
@@ -467,23 +464,19 @@
 	    (filter-args (cdr a)))))
   (cons first-arg (filter-args args)))
 
-(same-parity 1 2 3 4 5 6 7)
-(same-parity 2 3 4 5 6 7)
-
 ; ex 2.24
 (define a (list 1 (list 2 (list 3 4))))
 (length a)
 ;ex 2.27
 
 (define x (list (list 1 2) (list 3 4)))
-(reverse x)
+
 (define (deep-reverse x)
   (if (or (null? x)
 	  (not (pair? x)))
       x
       (append (deep-reverse (cdr x))
 	      (list (deep-reverse (car x))))))
-(deep-reverse x)
 
 ;ex 2.28
 
@@ -493,7 +486,6 @@
 	(else (append (fringe (car tree))
 		      (fringe (cdr tree))))))
 
-(fringe (list x x))
 
 ;ex 2.29
 (define (make-mobile left right)
@@ -540,8 +532,6 @@
 			    (cons (car s) subset))
 			  rest)))))
 
-(subsets (list 1 2 3))
-
 ; ex 2.33
 (define (accumulate op initial sequence)
   (if (null? sequence) initial
@@ -565,7 +555,6 @@
 		(+ this-coeff (* x higher-terms)))
 	      0
 	      coefficient-sequence))
-(horner-eval 3 (list 1 0 1))
 
 ;ex 2.35
 (define (count-leaves tree)
@@ -576,7 +565,6 @@
 		       tree)))
 
 (define tree (list (list 1 2) 3 (list 4 (list 5 6))))
-(count-leaves tree)
 
 ; ex 2.36
 
@@ -586,7 +574,6 @@
       (cons (accumulate op init (map car seqs))
 	    (accumulate-n op init (map cdr seqs)))))
 
-(accumulate-n + 0 (list (list 1 2) (list 3 4)))
 
 ; ex 2.37
 
@@ -599,15 +586,12 @@
 (define (transpose mat)
   (accumulate-n cons '() mat))
 
-(transpose (list (list 1 2 3) (list 4 5 6)))
-
 (define (matrix-*-matrix m n)
   (let ((cols (transpose n)))
     (map (lambda (row) (matrix-*-vector cols row)) m)))
 
 (define m (list (list 1 2) (list 3 4)))
 (define n (list (list 2 3) (list 1 4)))
-(matrix-*-matrix m n)
 
 ; ex 2.39
 
@@ -630,7 +614,6 @@
 		  (enumerate-interval 1 (- i 1))))
 	   (enumerate-interval 1 n)))
 
-(unique-pairs 5)
 
 ; ex 2.41
 
@@ -647,6 +630,4 @@
 		  (cadr triplet)
 		  (caddr triplet)) s))
 	  (unique-triplets n)))
-
-(sum-triplets 5 10)
 
