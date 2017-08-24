@@ -13,9 +13,9 @@
 
 (define (sqrt-iter guess x)
   (if (good-enough2? guess x)
-	  guess
-	  (sqrt-iter (improve guess x)
-		     x)))
+      guess
+      (sqrt-iter (improve guess x)
+		 x)))
 
 (define (improve guess x)
   (average guess (/ x guess)))
@@ -54,7 +54,7 @@
 	((= x 0) (* 2 y))
 	((= y 1) 2)
 	(else (A (- x 1)
-	      (A x (- y 1))))))
+		 (A x (- y 1))))))
 
 (define (f n)
   (a 0 n))
@@ -97,6 +97,26 @@
 	    (fast-exp-iter (* a b) b (- n 1))
 	    (fast-exp-iter a (* b b) (/ n 2)))))
   (fast-exp-iter 1 b n))
+
+;ex1.17
+(define (double x) (* 2 x))
+(define (halve x) (/ x 2))
+
+(define (fast-mult a b)
+  (if (= b 0) 0
+      (if (= (remainder b 2) 0)
+	  (double (fast-mult a (halve b)))
+	  (+ a (fast-mult a (- b 1))))))
+
+;ex1.18
+(define (fast-mult-iter a b)
+  (define (fast-mult-iter-helper x y z)
+    (cond ((= z 0) x)
+	  ((= (remainder z 2) 0)
+	   (fast-mult-iter-helper x (double y) (halve z)))
+	  ((fast-mult-iter-helper (+ x y) y (- z 1)))))
+  (fast-mult-iter-helper 0 a b))
+
 
 ;fermat test
 
@@ -212,6 +232,26 @@
 (define (factorial n)
   (product identity inc 1 n))
 
+(define (pi-term a)
+  (/ (* a (+ a 2)) (square (+ a 1))))
+
+(define (pi-next a) (+ a 2))
+
+(define (pi-product a n)
+  (product pi-term pi-next a n))
+
+(define (accumulate combiner null-value term next a b)
+  (if (> a b) null-value
+      (combiner (term a)
+		(accumulate combiner null-value term next (next a) b))))
+
+(define (sum-accumulate term next a b)
+  (accumulate + 0 term next a b))
+
+;ex1.34
+
+(define (f g)
+  (g 2))
 
 ;ex 1.35
 
