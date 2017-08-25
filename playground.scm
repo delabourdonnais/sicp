@@ -253,11 +253,13 @@
 (define (f g)
   (g 2))
 
-;ex 1.35
+;ex 1.35 1.36
 
 (define (fixed-point f guess)
   (define (close-enough? a b)
     (< (abs (- a b)) 0.0001))
+  (newline)
+  (display guess)
   (if (close-enough? (f guess) guess)
       (f guess)
       (fixed-point f (f guess))))
@@ -270,8 +272,6 @@
 (define (sqrt x)
   (fixed-point (lambda (y) (average y (/ x y))) 1.0))
 
-; ex 1.36
-
 ;ex 1.37
 
 (define (cont-frac n d k)
@@ -280,12 +280,6 @@
 	(/ (n k) (d k))
 	(/ (n start) (+ (d start) (cf-helper (+ start 1))))))
   (cf-helper 1))
-
-(define golden-inv (cont-frac
-		    (lambda (i) 1.0)
-		    (lambda (i) 1.0)
-		    1000))
-(/ 1 golden-inv)
 
 (define (cont-frac-iter n d k)
   (define (cf-helper result count)
@@ -306,10 +300,6 @@
   (cond ((= (remainder i 3) 0) 1)
 	((= (remainder i 3) 1) 1)
 	(else (* 2 (/ (+ i 1) 3)))))
-
-(+ (cont-frac-iter (lambda (i) 1.0)
-		euler-denom
-		1000) 2)
 
 ; ex 1.39
 
@@ -342,7 +332,6 @@
 
 (define (newtons-method g guess)
   (fixed-point (newtons-transform g) guess))
-
 
 ; ex 1.42
 
@@ -379,7 +368,7 @@
 (define (smooth-n-fold f n)
   (repeated (smooth f) n))
 
-; ex 1.45
+; ex 1.46
 (define (iterative-improve close-enough? improve)
   (define (test guess)
     (if (close-enough? guess)
@@ -394,7 +383,6 @@
     (< (abs (- x (* guess guess))) 0.0001))
   ((iterative-improve close-enough? improve) 1.0))
 
-(sqrt 2)
 ; Chapter 2
 ;ex 2.1
 (define (gcd a b)
