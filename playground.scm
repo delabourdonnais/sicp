@@ -1,12 +1,15 @@
 ;ex 1.3
+
 (define (square x) (* x x))
 
 ;ex 1.5
+
 (define (p) (p))
 (define (test x y)
   (if (= x 0) 0 y))
 
 ;ex 1.6
+
 (define (new-if predicate if-clause else-clause)
   (cond (predicate if-clause)
 	(else else-clause)))
@@ -45,6 +48,7 @@
   (< (abs (- guess (improve-cube guess x))) 0.001))
 
 ;ex 1.9
+
 ; first process is recursive, second one is iterative
 
 ;ex 1.10
@@ -99,6 +103,7 @@
   (fast-exp-iter 1 b n))
 
 ;ex1.17
+
 (define (double x) (* 2 x))
 (define (halve x) (/ x 2))
 
@@ -434,40 +439,97 @@
 	 (y-point (end-segment segment)))
       2)))
 
+;ex 2.3
+
+(define (make-rect1 point dimension)
+  (cons (point dimension)))
+
+(define (width-rect1 rect)
+  (car (cdr rect)))
+
+(define (height-rect1 rect)
+  (cdr (cdr rect)))
+
+(define (make-rect2 point1 point2)
+  (cons (point1 point2)))
+
+(define (width-rect2 rect)
+  (abs (- (x-point (car rect)) (x-point (cdr rect)))))
+
+(define (height-rect2 rect)
+  (abs (- (y-point (car rect)) (y-point (cdr rect)))))
+
+(define (area-rect rect)
+  (* (width-rect1 rect) (height-rect1 rect)))
+
 ; ex 2.4
-(define (cons x y)
+(define (cons1 x y)
   (lambda (m) (m x y)))
 
-(define (car z)
+(define (car1 z)
   (z (lambda (x y) x)))
 
-(define (cdr z)
+(define (cdr1 z)
   (z (lambda (x y) y)))
 
-(define z (cons 1 66))
-
-(define (exp b n)
-  (cond ((= n 0) 1)
-	((= (remainder n 2) 0)
-	 (* (exp b (/ n 2)) (exp b (/ n 2))))
-	(else (* b (exp b (- n 1))))))
-
-
 ;ex 2.5
-(define (cons a b) ; a and b are non negative integers
-  (* (exp 2 a) (exp 3 b)))
+(define (expt b n)
+  (if (= 0 n) 1
+      (* b (expt b (- n 1)))))
 
-(define (car z)
+
+(define (cons1 a b) ; a and b are non negative integers
+  (* (expt 2 a) (expt 3 b)))
+
+(define (car1 z)
   (define (car-acc value count)
     (if (= (remainder value 2) 1) count
 	(car-acc (/ value 2) (+ count 1))))
   (car-acc z 0))
 
-(define (cdr z)
+(define (cdr1 z)
   (define (cdr-acc value count)
     (if (not (= (remainder value 3) 0)) count
 	(cdr-acc (/ value 3) (+ count 1))))
   (cdr-acc z 0))
+
+;ex 2.6
+
+(define (add-interval x y)
+  (make-interval (+ (lower-bound x) (lower-bound y))
+		 (+ (upper-bound x) (upper-bound y))))
+
+(define (mult-interval x y)
+  (let ((p1 (* (lower-bound x) (lower-bound y)))
+	(p2 (* (lower-bound x) (upper-bound y)))
+	(p3 (* (upper-bound x) (lower-bound y)))
+	(p4 (* (upper-bound x) (upper-bound y))))
+    (make-interval (min p1 p2 p3 p4) (max p1 p2 p3 p4))))
+
+(define (div-interval x y)
+  (mul-interval x
+		(make-interval (/ 1.0 (upper-bound y))
+			       (/ 1.0 (lower-bound y)))))
+
+; ex 2.7
+
+(define (make-interval a b) (cons a b))
+
+(define (lower-bound interval)
+  (min (car interval) (cdr interval)))
+
+(define (upper-bound interval)
+  (max (car interval) (cdr interval)))
+
+; ex 2.8
+
+(define (sub-interval x y)
+  (add-interval x (make-interval (- (upper-bound y))
+				 (- (lower-bound y)))))
+
+; ex 2.9
+(define (width-interval x)
+  (/ (- (upper-bound x) (lower-bound x)) 2.0))
 
 ; ex 2.17
 
