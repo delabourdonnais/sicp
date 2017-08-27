@@ -538,6 +538,14 @@
 	((= (length a) 1) a)
 	(else (last-pair (cdr a)))))
 
+; ex 2.19
+
+(define (cc amount coins)
+  (cond ((= amount 0) 1)
+	((or (null? coins) (< amount 0)) 0)
+	(else (+ (cc amount (cdr coins))
+		 (cc (- amount (car coins)) coins)))))
+
 ; ex 2.18
 
 (define (reverse a)
@@ -555,11 +563,10 @@
   (cons first-arg (filter-args args)))
 
 ; ex 2.24
-(define a (list 1 (list 2 (list 3 4))))
-(length a)
-;ex 2.27
 
-(define x (list (list 1 2) (list 3 4)))
+(define a (list 1 (list 2 (list 3 4))))
+
+;ex 2.27
 
 (define (deep-reverse x)
   (if (or (null? x)
