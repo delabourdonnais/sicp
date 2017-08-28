@@ -620,10 +620,21 @@
 	     (square-tree sub-tree)
 	     (square sub-tree))) tree))
 
+; ex 2.31
+
+(define (tree-map tree f)
+  (map (lambda (subtree)
+	 (if (pair? subtree) (tree-map subtree f)
+	     (f subtree))) tree))
+	    
+
+(define (square-tree2 tree)
+  (tree-map tree square))
+
 ; ex 2.32
 (define (subsets s)
   (if (null? s)
-      (list '())
+      (list ())
       (let ((rest (subsets (cdr s))))
 	(append rest (map (lambda (subset)
 			    (cons (car s) subset))
@@ -638,7 +649,7 @@
 (define (map1 f sequence)
   (accumulate (lambda (x y)
 		(cons (f x) y)
-		) '() sequence))
+		) () sequence))
 
 (define (append1 seq1 seq2)
   (accumulate cons seq2 seq1))
@@ -660,8 +671,6 @@
 			     1
 			     (count-leaves node)))
 		       tree)))
-
-(define tree (list (list 1 2) 3 (list 4 (list 5 6))))
 
 ; ex 2.36
 
