@@ -676,7 +676,7 @@
 
 (define (accumulate-n op init seqs)
   (if (null? (car seqs))
-      '()
+      ()
       (cons (accumulate op init (map car seqs))
 	    (accumulate-n op init (map cdr seqs)))))
 
@@ -690,36 +690,32 @@
   (map (lambda (row) (dot-product row v)) m))
 
 (define (transpose mat)
-  (accumulate-n cons '() mat))
+  (accumulate-n cons () mat))
 
 (define (matrix-*-matrix m n)
   (let ((cols (transpose n)))
     (map (lambda (row) (matrix-*-vector cols row)) m)))
 
-(define m (list (list 1 2) (list 3 4)))
-(define n (list (list 2 3) (list 1 4)))
-
 ; ex 2.39
 
 (define (reverse sequence)
-  (accumulate (lambda (x y) (append y (list x))) '() sequence))
+  (accumulate (lambda (x y) (append y (list x))) () sequence))
 
 ; ex 2.40
 
 (define (flatmap proc seq)
-  (accumulate append '() (map proc seq)))
+  (accumulate append () (map proc seq)))
 
 (define (enumerate-interval low high)
-  (if (> low high) '()
+  (if (> low high) ()
       (cons low (enumerate-interval (+ low 1) high))))
 
 (define (unique-pairs n)
-  (flatmap (lambda (i)
-	     (map (lambda (j)
-		    (list i j))
-		  (enumerate-interval 1 (- i 1))))
-	   (enumerate-interval 1 n)))
-
+  (flatmap 
+   (lambda (i) (map (lambda (j)
+		      (list i j))
+		    (enumerate-interval 1 (- i 1))))
+   (enumerate-interval 1 n)))
 
 ; ex 2.41
 
@@ -736,4 +732,15 @@
 		  (cadr triplet)
 		  (caddr triplet)) s))
 	  (unique-triplets n)))
+
+(define (remove item seq)
+  (filter (lambda (x) (not (= item x))) seq))
+
+(define (permutations s)
+  (if (null? s)
+      (list ())
+      (flatmap (lambda (x)
+		 (map (lambda (p) (cons x p))
+		      (permutations (remove x s))))
+	       s)))
 
